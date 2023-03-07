@@ -160,12 +160,10 @@ function installTerragrunt {
 function main {
   # Source the other files to gain access to their functions
   scriptDir=$(dirname ${0})
-  echo  "${INPUT_PRE_HOOK_COMMAND}"
-  bash -c "${INPUT_PRE_HOOK_COMMAND}"
 
-  env | grep "INPUT"
 
-  git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com".insteadOf ssh://git@github.com
+  echo /usr/bin/git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com".insteadOf ssh://git@github.com
+  /usr/bin/git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com".insteadOf ssh://git@github.com
 
   source ${scriptDir}/terragrunt_fmt.sh
   source ${scriptDir}/terragrunt_init.sh
