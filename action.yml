@@ -33,6 +33,10 @@ inputs:
   tf_actions_fmt_write:
     description: 'Write Terragrunt fmt changes to source files.'
     default: false
+  pre_hook_command:
+    description: 'Runs this command using "bash -c" _prior_ to executing action'
+  post_hook_command:
+    description: 'Runs this command using "bash -c" _after_ to executing action'
 outputs:
   tf_actions_output:
     description: 'The Terragrunt outputs in JSON format.'

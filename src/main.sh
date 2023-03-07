@@ -73,6 +73,16 @@ function parseInputs {
   if [ -n "${TF_WORKSPACE}" ]; then
     tfWorkspace="${TF_WORKSPACE}"
   fi
+
+  preHookCommand=""
+  if [ -n "${INPUT_PRE_HOOK_COMMAND}" ]; then
+    preHookCommand="${INPUT_PRE_HOOK_COMMAND}"
+  fi
+
+  postHookCommand=""
+  if [ -n "${INPUT_POST_HOOK_COMMAND}" ]; then
+    postHookCommand="${INPUT_POST_HOOK_COMMAND}"
+  fi
 }
 
 function configureCLICredentials {
@@ -150,6 +160,9 @@ function installTerragrunt {
 function main {
   # Source the other files to gain access to their functions
   scriptDir=$(dirname ${0})
+
+  bash -c "$preHookCommand"
+
   source ${scriptDir}/terragrunt_fmt.sh
   source ${scriptDir}/terragrunt_init.sh
   source ${scriptDir}/terragrunt_validate.sh
@@ -207,6 +220,9 @@ function main {
       exit 1
       ;;
   esac
+
+  # TODO: This should probably in a trap()
+  bash -c "$postHookCommand"
 }
 
 main "${*}"
