@@ -160,8 +160,8 @@ function installTerragrunt {
 function main {
   # Source the other files to gain access to their functions
   scriptDir=$(dirname ${0})
-
-  bash -c "${preHookCommand}"
+  echo  "${INPUT_PRE_HOOK_COMMAND}"
+  bash -c "${INPUT_PRE_HOOK_COMMAND}"
 
   env | grep "INPUT"
 
