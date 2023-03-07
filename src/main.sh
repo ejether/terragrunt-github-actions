@@ -162,7 +162,10 @@ function main {
   scriptDir=$(dirname ${0})
 
   bash -c "${preHookCommand}"
-  git config --global url."https://oauth2:${{ secrets.GITHUB_TOKEN }}@github.com".insteadOf ssh://git@github.com
+
+  env | grep "INPUT"
+
+  git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com".insteadOf ssh://git@github.com
 
   source ${scriptDir}/terragrunt_fmt.sh
   source ${scriptDir}/terragrunt_init.sh
