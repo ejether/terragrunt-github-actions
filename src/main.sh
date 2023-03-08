@@ -6,12 +6,12 @@ function stripColors {
 
 function hasPrefix {
   case ${2} in
-    "${1}"*)
-      true
-      ;;
-    *)
-      false
-      ;;
+  "${1}"*)
+    true
+    ;;
+  *)
+    false
+    ;;
   esac
 }
 
@@ -74,6 +74,8 @@ function parseInputs {
     tfWorkspace="${TF_WORKSPACE}"
   fi
 
+  env | grep INPUT
+
   preHookCommand=""
   if [ -n "${INPUT_PRE_HOOK_COMMAND}" ]; then
     preHookCommand="${INPUT_PRE_HOOK_COMMAND}"
@@ -85,9 +87,12 @@ function parseInputs {
   fi
 }
 
+echo $preHookCommand
+echo $postHookCommand
+
 function configureCLICredentials {
   if [[ ! -f "${HOME}/.terraformrc" ]] && [[ "${tfCLICredentialsToken}" != "" ]]; then
-    cat > ${HOME}/.terraformrc << EOF
+    cat >${HOME}/.terraformrc <<EOF
 credentials "${tfCLICredentialsHostname}" {
   token = "${tfCLICredentialsToken}"
 }
@@ -117,7 +122,7 @@ function installTerraform {
   echo "Successfully downloaded Terraform v${tfVersion}"
 
   echo "Unzipping Terraform v${tfVersion}"
-  unzip -d /usr/local/bin /tmp/terraform_${tfVersion} &> /dev/null
+  unzip -d /usr/local/bin /tmp/terraform_${tfVersion} &>/dev/null
   if [ "${?}" -ne 0 ]; then
     echo "Failed to unzip Terraform v${tfVersion}"
     exit 1
@@ -149,7 +154,7 @@ function installTerragrunt {
 
   echo "Moving Terragrunt ${tgVersion} to PATH"
   chmod +x /tmp/terragrunt
-  mv /tmp/terragrunt /usr/local/bin/terragrunt 
+  mv /tmp/terragrunt /usr/local/bin/terragrunt
   if [ "${?}" -ne 0 ]; then
     echo "Failed to move Terragrunt ${tgVersion}"
     exit 1
@@ -160,11 +165,6 @@ function installTerragrunt {
 function main {
   # Source the other files to gain access to their functions
   scriptDir=$(dirname ${0})
-
-  if [[ -n "$preHookCommand" ]]; then
-    echo "Executing pre_hook_command: ${preHookCommand}"
-    bash -c "${preHookCommand}"
-  fi
 
   source ${scriptDir}/terragrunt_fmt.sh
   source ${scriptDir}/terragrunt_init.sh
@@ -182,53 +182,58 @@ function main {
   cd ${GITHUB_WORKSPACE}/${tfWorkingDir}
 
   case "${tfSubcommand}" in
-    fmt)
-      installTerragrunt
-      terragruntFmt ${*}
-      ;;
-    init)
-      installTerragrunt
-      terragruntInit ${*}
-      ;;
-    validate)
-      installTerragrunt
-      terragruntValidate ${*}
-      ;;
-    plan)
-      installTerragrunt
-      terragruntPlan ${*}
-      ;;
-    apply)
-      installTerragrunt
-      terragruntApply ${*}
-      ;;
-    output)
-      installTerragrunt
-      terragruntOutput ${*}
-      ;;
-    import)
-      installTerragrunt
-      terragruntImport ${*}
-      ;;
-    taint)
-      installTerragrunt
-      terragruntTaint ${*}
-      ;;
-    destroy)
-      installTerragrunt
-      terragruntDestroy ${*}
-      ;;
-    *)
-      echo "Error: Must provide a valid value for terragrunt_subcommand"
-      exit 1
-      ;;
+  fmt)
+    installTerragrunt
+    terragruntFmt ${*}
+    ;;
+  init)
+    installTerragrunt
+    terragruntInit ${*}
+    ;;
+  validate)
+    installTerragrunt
+    terragruntValidate ${*}
+    ;;
+  plan)
+    installTerragrunt
+    terragruntPlan ${*}
+    ;;
+  apply)
+    installTerragrunt
+    terragruntApply ${*}
+    ;;
+  output)
+    installTerragrunt
+    terragruntOutput ${*}
+    ;;
+  import)
+    installTerragrunt
+    terragruntImport ${*}
+    ;;
+  taint)
+    installTerragrunt
+    terragruntTaint ${*}
+    ;;
+  destroy)
+    installTerragrunt
+    terragruntDestroy ${*}
+    ;;
+  *)
+    echo "Error: Must provide a valid value for terragrunt_subcommand"
+    exit 1
+    ;;
   esac
-
-  # TODO: This should probably in a trap()
-    if [[ -n "${postHookCommand}" ]]; then
-      echo "Executing pre_hook_command: ${postHookCommand}"
-      bash -c "${postHookCommand}"
-    fi
 }
 
+if [[ -n "$preHookCommand" ]]; then
+  echo "Executing pre_hook_command: ${preHookCommand}"
+  bash -c "${preHookCommand}"
+fi
+
 main "${*}"
+
+# TODO: This should probably in a trap()
+if [[ -n "${postHookCommand}" ]]; then
+  echo "Executing pre_hook_command: ${postHookCommand}"
+  bash -c "${postHookCommand}"
+fi
