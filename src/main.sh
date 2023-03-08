@@ -161,8 +161,10 @@ function main {
   # Source the other files to gain access to their functions
   scriptDir=$(dirname ${0})
 
-#  echo git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com".insteadOf ssh://git@github.com
-#  git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com".insteadOf ssh://git@github.com
+  if [[ -n "$preHookCommand" ]]; then
+    echo "Executing pre_hook_command: ${preHookCommand}"
+    bash -c "${preHookCommand}"
+  fi
 
   source ${scriptDir}/terragrunt_fmt.sh
   source ${scriptDir}/terragrunt_init.sh
@@ -223,7 +225,10 @@ function main {
   esac
 
   # TODO: This should probably in a trap()
-  bash -c "$postHookCommand"
+    if [[ -n "${postHookCommand}" ]]; then
+      echo "Executing pre_hook_command: ${postHookCommand}"
+      bash -c "${postHookCommand}"
+    fi
 }
 
 main "${*}"
