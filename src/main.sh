@@ -75,16 +75,6 @@ function parseInputs {
   fi
 
   env | grep INPUT
-
-  preHookCommand=""
-  if [ -n "${INPUT_PRE_HOOK_COMMAND}" ]; then
-    preHookCommand="${INPUT_PRE_HOOK_COMMAND}"
-  fi
-
-  postHookCommand=""
-  if [ -n "${INPUT_POST_HOOK_COMMAND}" ]; then
-    postHookCommand="${INPUT_POST_HOOK_COMMAND}"
-  fi
 }
 
 function configureCLICredentials {
@@ -222,20 +212,12 @@ function main {
   esac
 }
 
-echo $preHookCommand
-echo $postHookCommand
-
 env | grep INPUT
-
-if [[ -n "$preHookCommand" ]]; then
-  echo "Executing pre_hook_command: ${preHookCommand}"
-  bash -c "${preHookCommand}"
-fi
+echo "Executing pre_hook_command: ${INPUT_PRE_HOOK_COMMAND}"
+bash -c "${INPUT_PRE_HOOK_COMMAND}"
 
 main "${*}"
 
 # TODO: This should probably in a trap()
-if [[ -n "${postHookCommand}" ]]; then
-  echo "Executing pre_hook_command: ${postHookCommand}"
-  bash -c "${postHookCommand}"
-fi
+echo "Executing pre_hook_command: ${INPUT_POST_HOOK_COMMAND}"
+bash -c "${INPUT_POST_HOOK_COMMAND}"
