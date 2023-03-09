@@ -73,8 +73,6 @@ function parseInputs {
   if [ -n "${TF_WORKSPACE}" ]; then
     tfWorkspace="${TF_WORKSPACE}"
   fi
-
-  env | grep INPUT
 }
 
 function configureCLICredentials {
