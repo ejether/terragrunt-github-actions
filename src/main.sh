@@ -212,9 +212,6 @@ function main {
   esac
 }
 
-env | grep INPUT
-env | grep GIT
-
 echo "Executing pre_hook_command: ${INPUT_PRE_HOOK_COMMAND}"
 bash -c "${INPUT_PRE_HOOK_COMMAND}"
 
