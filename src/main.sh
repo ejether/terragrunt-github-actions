@@ -87,9 +87,6 @@ function parseInputs {
   fi
 }
 
-echo $preHookCommand
-echo $postHookCommand
-
 function configureCLICredentials {
   if [[ ! -f "${HOME}/.terraformrc" ]] && [[ "${tfCLICredentialsToken}" != "" ]]; then
     cat >${HOME}/.terraformrc <<EOF
@@ -224,6 +221,11 @@ function main {
     ;;
   esac
 }
+
+echo $preHookCommand
+echo $postHookCommand
+
+env | grep INPUT
 
 if [[ -n "$preHookCommand" ]]; then
   echo "Executing pre_hook_command: ${preHookCommand}"
